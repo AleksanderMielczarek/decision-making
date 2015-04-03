@@ -1,0 +1,6 @@
+rootProject.name = 'decision-making'
+
+include 'decision-making-toolkit'
+
+include 'decision-making-console'
+

@@ -1,0 +1,9 @@
+apply plugin: 'application'
+
+mainClassName = 'com.gmail.alekmiel91.decisionmaking.console.ConsoleDecisionMaking'
+
+dependencies {
+    compile project(':decision-making-toolkit')
+    compile 'com.beust:jcommander:1.47'
+    provided 'org.projectlombok:lombok:1.16.2'
+}

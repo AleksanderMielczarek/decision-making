@@ -1,0 +1,10 @@
+# Created by .ignore support plugin (hsz.mobi)
+.gradle
+.idea
+build
+decision-making.iml
+gradle.properties
+decision-making-console/build
+decision-making-console/decision-making-console.iml
+decision-making-toolkit/build
+decision-making-toolkit/decision-making-toolkit.iml
