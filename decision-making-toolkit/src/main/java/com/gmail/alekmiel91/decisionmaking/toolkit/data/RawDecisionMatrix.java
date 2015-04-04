@@ -26,10 +26,12 @@ import java.util.List;
 @TotalSceneProbability
 public class RawDecisionMatrix implements Defaultable {
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @Valid
     @NotEmpty(message = "{error.raw.decision.matrix.alternatives.not.empty}")
     private List<Alternative> alternatives;
 
+    @SuppressWarnings("MismatchedQueryAndUpdateOfCollection")
     @Valid
     @NotEmpty(message = "{error.raw.decision.matrix.scenes.not.empty}")
     private List<Scene> scenes;

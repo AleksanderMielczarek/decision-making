@@ -16,10 +16,10 @@ import java.io.File;
  */
 public interface DecisionMatrixLoader {
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(DecisionMatrixLoader.class);
+    Logger LOGGER = LoggerFactory.getLogger(DecisionMatrixLoader.class);
 
-    public default DecisionMatrix load(File file) throws DecisionMakingException {
-        RawDecisionMatrix rawDecisionMatrix = null;
+    default DecisionMatrix load(File file) throws DecisionMakingException {
+        RawDecisionMatrix rawDecisionMatrix;
         try {
             rawDecisionMatrix = loadRawDecisionMatrix(file);
         } catch (DecisionMakingLoaderException e) {
@@ -37,9 +37,9 @@ public interface DecisionMatrixLoader {
         return builder.build();
     }
 
-    public RawDecisionMatrix loadRawDecisionMatrix(File file) throws DecisionMakingLoaderException;
+    RawDecisionMatrix loadRawDecisionMatrix(File file) throws DecisionMakingLoaderException;
 
-    public default void save(DecisionMatrix decisionMatrix, File file) throws DecisionMakingException {
+    default void save(DecisionMatrix decisionMatrix, File file) throws DecisionMakingException {
         try {
             saveRawDecisionMatrix(decisionMatrix.getRawDecisionMatrix(), file);
         } catch (DecisionMakingLoaderException e) {
@@ -47,5 +47,5 @@ public interface DecisionMatrixLoader {
         }
     }
 
-    public void saveRawDecisionMatrix(RawDecisionMatrix rawDecisionMatrix, File file) throws DecisionMakingLoaderException;
+    void saveRawDecisionMatrix(RawDecisionMatrix rawDecisionMatrix, File file) throws DecisionMakingLoaderException;
 }

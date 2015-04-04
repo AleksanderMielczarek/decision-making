@@ -10,7 +10,7 @@ import java.util.ResourceBundle;
  */
 @Getter
 public enum Context {
-    INSTANCE,;
+    INSTANCE;
 
     private final ResourceBundle resources = ResourceBundle.getBundle("bundle");
 }

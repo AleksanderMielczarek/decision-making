@@ -18,9 +18,6 @@ public class UniqueFactorsNamesValidator implements ConstraintValidator<UniqueFa
 
     @Override
     public boolean isValid(Factor value, ConstraintValidatorContext context) {
-        if (value.getFactorsNames() == null) {
-            return false;
-        }
-        return new HashSet<>(value.getFactorsNames()).size() == value.getFactorsNames().size();
+        return value.getFactorsNames() != null && new HashSet<>(value.getFactorsNames()).size() == value.getFactorsNames().size();
     }
 }

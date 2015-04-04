@@ -7,5 +7,5 @@ import com.gmail.alekmiel91.decisionmaking.toolkit.data.DecisionMatrix;
  *         Created on 2015-04-01.
  */
 public interface DecisionMaker {
-    public String makeDecision(DecisionMatrix decisionMatrix);
+    String makeDecision(DecisionMatrix decisionMatrix);
 }

@@ -20,10 +20,7 @@ public class DoubleRangeValidator implements ConstraintValidator<DoubleRange, Do
 
     @Override
     public boolean isValid(Double value, ConstraintValidatorContext context) {
-        if (value == null) {
-            return true;
-        }
+        return value == null || value >= min && value <= max;
 
-        return value >= min && value <= max;
     }
 }

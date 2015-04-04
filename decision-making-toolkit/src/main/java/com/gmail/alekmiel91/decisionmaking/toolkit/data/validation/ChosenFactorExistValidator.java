@@ -17,9 +17,6 @@ public class ChosenFactorExistValidator implements ConstraintValidator<ChosenFac
 
     @Override
     public boolean isValid(Factor value, ConstraintValidatorContext context) {
-        if (value.getFactorsNames() == null || value.getChosenFactor() == null) {
-            return false;
-        }
-        return value.getFactorsNames().contains(value.getChosenFactor());
+        return !(value.getFactorsNames() == null || value.getChosenFactor() == null) && value.getFactorsNames().contains(value.getChosenFactor());
     }
 }

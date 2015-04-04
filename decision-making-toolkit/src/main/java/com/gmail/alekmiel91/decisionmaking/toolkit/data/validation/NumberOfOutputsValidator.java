@@ -16,10 +16,7 @@ public class NumberOfOutputsValidator implements ConstraintValidator<NumberOfOut
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
-        if (value.getOutputs() == null || value.getAlternatives() == null || value.getScenes() == null) {
-            return false;
-        }
-        return value.getOutputs().size() == value.getAlternatives().size() * value.getScenes().size();
+        return !(value.getOutputs() == null || value.getAlternatives() == null || value.getScenes() == null) && value.getOutputs().size() == value.getAlternatives().size() * value.getScenes().size();
     }
 
 }

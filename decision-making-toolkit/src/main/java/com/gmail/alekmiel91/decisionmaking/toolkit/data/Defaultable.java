@@ -12,11 +12,11 @@ import java.util.List;
  */
 public interface Defaultable {
 
-    public static Logger LOGGER = LoggerFactory.getLogger(Defaultable.class);
+    Logger LOGGER = LoggerFactory.getLogger(Defaultable.class);
 
-    public default void applyDefault() {
+    default void applyDefault() {
         applyDefaultAndLog().forEach(LOGGER::warn);
     }
 
-    public List<String> applyDefaultAndLog();
+    List<String> applyDefaultAndLog();
 }

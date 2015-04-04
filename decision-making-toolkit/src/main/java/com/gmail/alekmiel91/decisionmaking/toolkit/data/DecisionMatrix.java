@@ -5,12 +5,10 @@ import com.google.common.collect.ArrayTable;
 import com.google.common.collect.Table;
 import lombok.AccessLevel;
 import lombok.Getter;
-import org.apache.commons.lang3.StringUtils;
 import org.nocrala.tools.texttablefmt.BorderStyle;
 import org.nocrala.tools.texttablefmt.CellStyle;
 import org.nocrala.tools.texttablefmt.ShownBorders;
 
-import java.text.Format;
 import java.text.MessageFormat;
 import java.util.Iterator;
 import java.util.List;

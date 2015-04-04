@@ -18,13 +18,7 @@ public class UniqueAlternativesValidator implements ConstraintValidator<UniqueAl
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
-        if (value.getAlternatives() == null) {
-            return false;
-        }
-        return value.getAlternatives().stream()
-                .map(Alternative::getName)
-                .collect(Collectors.toSet())
-                .size() == value.getAlternatives().size();
+        return value.getAlternatives() != null && value.getAlternatives().stream().map(Alternative::getName).collect(Collectors.toSet()).size() == value.getAlternatives().size();
     }
 
 }

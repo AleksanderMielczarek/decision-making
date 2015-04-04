@@ -18,13 +18,7 @@ public class UniqueScenesValidator implements ConstraintValidator<UniqueScenes, 
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
-        if (value.getScenes() == null) {
-            return false;
-        }
-        return value.getScenes().stream()
-                .map(Scene::getName)
-                .collect(Collectors.toSet())
-                .size() == value.getScenes().size();
+        return value.getScenes() != null && value.getScenes().stream().map(Scene::getName).collect(Collectors.toSet()).size() == value.getScenes().size();
     }
 
 }

@@ -51,15 +51,14 @@ public class BayesianDecisionMaker implements DecisionMaker {
                 .collect(Collectors.toList());
 
         Multimap<String, Double> factorAlternativesValues = ArrayListMultimap.create();
-        probabilitiesFactorsOutputsValuesDividedBySum.forEach(probabilitiesFactorsOutputValuesDividedBySum -> {
-            decisionMatrix.getDecisionTable().rowKeySet().stream().forEach(alternative -> {
-                double bayesian = Seq.zip(decisionMatrix.getDecisionTable().row(alternative).values().stream(), probabilitiesFactorsOutputValuesDividedBySum.stream())
-                        .mapToDouble(tuple -> tuple.v1().getValue() * tuple.v2())
-                        .sum();
+        probabilitiesFactorsOutputsValuesDividedBySum.forEach(probabilitiesFactorsOutputValuesDividedBySum ->
+                decisionMatrix.getDecisionTable().rowKeySet().stream().forEach(alternative -> {
+            double bayesian = Seq.zip(decisionMatrix.getDecisionTable().row(alternative).values().stream(), probabilitiesFactorsOutputValuesDividedBySum.stream())
+                    .mapToDouble(tuple -> tuple.v1().getValue() * tuple.v2())
+                    .sum();
 
-                factorAlternativesValues.put(alternative.getName(), bayesian);
-            });
-        });
+            factorAlternativesValues.put(alternative.getName(), bayesian);
+        }));
 
         double max = factorAlternativesValues.values().stream()
                 .mapToDouble(Double::valueOf)
