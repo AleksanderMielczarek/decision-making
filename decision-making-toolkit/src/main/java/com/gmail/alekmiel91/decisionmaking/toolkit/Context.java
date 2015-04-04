@@ -14,7 +14,7 @@ import java.util.ResourceBundle;
  */
 @Getter
 public enum Context {
-    INSTANCE,;
+    INSTANCE;
 
     private final Validator validator = Validation.byDefaultProvider()
             .configure()
