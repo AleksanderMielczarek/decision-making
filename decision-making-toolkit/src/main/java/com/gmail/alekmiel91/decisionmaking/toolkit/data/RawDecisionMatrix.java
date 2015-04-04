@@ -7,7 +7,9 @@ import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
+import java.text.MessageFormat;
 import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
 
 /**
@@ -41,8 +43,10 @@ public class RawDecisionMatrix implements Defaultable {
     private List<Factor> factors;
 
     @Override
-    public void applyDefault() {
+    public List<String> applyDefaultAndLog() {
         alternatives.forEach(Defaultable::applyDefault);
+
+        List<String> logs = new LinkedList<>();
 
         if ((factors == null || factors.isEmpty()) && scenes != null && !scenes.isEmpty()) {
             Factor factor = new Factor(Context.INSTANCE.getResources().getString("decision.matrix.table.factor"),
@@ -50,24 +54,36 @@ public class RawDecisionMatrix implements Defaultable {
                     "A",
                     Collections.nCopies(scenes.size(), 1.0));
 
+            String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.raw.decision.matrix.factor"),
+                    Context.INSTANCE.getResources().getString("decision.matrix.table.factor"), "A", "A", "1.0");
+
+            logs.add(log);
             factors = Collections.singletonList(factor);
         }
 
-        long numberOfNullProbabilities = scenes.stream()
-                .filter(scene -> scene.getProbability() == null)
-                .count();
-
-        if (numberOfNullProbabilities > 0) {
-            double sumOfNotNullProbabilities = scenes.stream()
-                    .filter(scene -> scene.getProbability() != null)
-                    .mapToDouble(Scene::getProbability)
-                    .sum();
-
-            final double newProbability = (1.0 - sumOfNotNullProbabilities) / numberOfNullProbabilities;
-
-            scenes.stream()
+        if (scenes != null && !scenes.isEmpty()) {
+            long numberOfNullProbabilities = scenes.stream()
                     .filter(scene -> scene.getProbability() == null)
-                    .forEach(scene -> scene.setProbability(newProbability));
+                    .count();
+
+            if (numberOfNullProbabilities > 0) {
+                double sumOfNotNullProbabilities = scenes.stream()
+                        .filter(scene -> scene.getProbability() != null)
+                        .mapToDouble(Scene::getProbability)
+                        .sum();
+
+                final double newProbability = (1.0 - sumOfNotNullProbabilities) / numberOfNullProbabilities;
+
+                scenes.stream()
+                        .filter(scene -> scene.getProbability() == null)
+                        .map(scene -> {
+                            scene.setProbability(newProbability);
+                            return MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.scene.probability"), scene.getName(), newProbability);
+                        })
+                        .forEach(logs::add);
+            }
         }
+        
+        return logs;
     }
 }

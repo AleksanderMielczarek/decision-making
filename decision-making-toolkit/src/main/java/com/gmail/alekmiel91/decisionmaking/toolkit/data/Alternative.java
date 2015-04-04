@@ -1,10 +1,14 @@
 package com.gmail.alekmiel91.decisionmaking.toolkit.data;
 
+import com.gmail.alekmiel91.decisionmaking.toolkit.Context;
 import com.gmail.alekmiel91.decisionmaking.toolkit.data.validation.DoubleRange;
 import lombok.*;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.constraints.NotNull;
+import java.text.MessageFormat;
+import java.util.Collections;
+import java.util.List;
 
 /**
  * @author Aleksander Mielczarek
@@ -34,7 +38,9 @@ public class Alternative implements Defaultable {
     }
 
     @Override
-    public void applyDefault() {
+    public List<String> applyDefaultAndLog() {
         risk = 0.5;
+        String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.alternative.risk"), name, risk);
+        return Collections.singletonList(log);
     }
 }

@@ -2,7 +2,6 @@ package com.gmail.alekmiel91.decisionmaking.toolkit.loader;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory;
-import com.gmail.alekmiel91.decisionmaking.toolkit.DecisionMakingException;
 import com.gmail.alekmiel91.decisionmaking.toolkit.data.RawDecisionMatrix;
 
 import java.io.File;
@@ -17,20 +16,20 @@ public class YAMLDecisionMatrixLoader implements DecisionMatrixLoader {
     private static final ObjectMapper MAPPER = new ObjectMapper(new YAMLFactory());
 
     @Override
-    public RawDecisionMatrix loadRawDecisionMatrix(File file) throws DecisionMakingException {
+    public RawDecisionMatrix loadRawDecisionMatrix(File file) throws DecisionMakingLoaderException {
         try {
             return MAPPER.readValue(file, RawDecisionMatrix.class);
         } catch (IOException e) {
-            throw new DecisionMakingException(e);
+            throw new DecisionMakingLoaderException(e);
         }
     }
 
     @Override
-    public void saveRawDecisionMatrix(RawDecisionMatrix rawDecisionMatrix, File file) throws DecisionMakingException {
+    public void saveRawDecisionMatrix(RawDecisionMatrix rawDecisionMatrix, File file) throws DecisionMakingLoaderException {
         try {
             MAPPER.writeValue(file, rawDecisionMatrix);
         } catch (IOException e) {
-            throw new DecisionMakingException(e);
+            throw new DecisionMakingLoaderException(e);
         }
     }
 

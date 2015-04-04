@@ -18,6 +18,9 @@ public class UniqueFactorsNameValidator implements ConstraintValidator<UniqueFac
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
+        if (value.getFactors() == null) {
+            return false;
+        }
         return value.getFactors().stream()
                 .map(Factor::getFactorName)
                 .collect(Collectors.toSet())

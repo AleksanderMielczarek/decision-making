@@ -2,6 +2,7 @@ package com.gmail.alekmiel91.decisionmaking.toolkit.maker;
 
 import com.gmail.alekmiel91.decisionmaking.toolkit.data.DecisionMatrix;
 import com.gmail.alekmiel91.decisionmaking.toolkit.data.Output;
+import com.rits.cloning.Cloner;
 import org.jooq.lambda.Seq;
 
 import java.util.HashMap;
@@ -33,10 +34,11 @@ public class SavageDecisionMaker implements DecisionMaker {
                 .map(tuple -> new Output(tuple.v1().getName(), tuple.v2()))
                 .collect(Collectors.toList());
 
-        DecisionMatrix regretDecisionMatrix = DecisionMatrix
-                .builder(decisionMatrix.getRawDecisionMatrix().getAlternatives(), decisionMatrix.getRawDecisionMatrix().getScenes(), regretOutputs)
-                .withFactors(decisionMatrix.getRawDecisionMatrix().getFactors())
-                .build();
+        Cloner cloner = new Cloner();
+        DecisionMatrix regretDecisionMatrix = cloner.deepClone(decisionMatrix);
+
+        Seq.zip(regretOutputs.stream(), regretDecisionMatrix.getDecisionTable().values().stream())
+                .forEach(tuple -> tuple.v2().setValue(tuple.v1().getValue()));
 
         final Map<String, Double> alternativesValues = new HashMap<>(decisionMatrix.getDecisionTable().rowKeySet().size());
 

@@ -17,6 +17,9 @@ public class TotalSceneProbabilityValidator implements ConstraintValidator<Total
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
+        if (value.getScenes() == null) {
+            return false;
+        }
         return value.getScenes().stream()
                 .mapToDouble(Scene::getProbability).sum() == 1.0;
     }

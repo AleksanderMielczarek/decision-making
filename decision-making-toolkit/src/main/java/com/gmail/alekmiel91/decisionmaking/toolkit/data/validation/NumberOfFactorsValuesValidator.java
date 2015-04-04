@@ -16,6 +16,9 @@ public class NumberOfFactorsValuesValidator implements ConstraintValidator<Numbe
 
     @Override
     public boolean isValid(RawDecisionMatrix value, ConstraintValidatorContext context) {
+        if (value.getFactors() == null || value.getScenes() == null) {
+            return false;
+        }
         return value.getFactors().stream()
                 .allMatch(factor -> factor.getFactorsOutputsValues().size() == factor.getFactorsNames().size() * value.getScenes().size());
     }
