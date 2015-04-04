@@ -15,14 +15,14 @@ import javax.validation.constraints.NotNull;
 @EqualsAndHashCode
 @AllArgsConstructor
 @NoArgsConstructor
-public class Alternative {
+public class Alternative implements Defaultable {
 
     @NotEmpty(message = "{error.alternative.name.not.empty}")
     private String name;
 
     @NotNull(message = "{error.alternative.risk.not.null}")
     @DoubleRange(min = 0.0, max = 1.0, message = "{error.alternative.risk.double.range}")
-    private double risk = 0.5;
+    private Double risk;
 
     public Alternative(String name) {
         this.name = name;
@@ -33,4 +33,8 @@ public class Alternative {
         return name + "(" + risk + ")";
     }
 
+    @Override
+    public void applyDefault() {
+        risk = 0.5;
+    }
 }

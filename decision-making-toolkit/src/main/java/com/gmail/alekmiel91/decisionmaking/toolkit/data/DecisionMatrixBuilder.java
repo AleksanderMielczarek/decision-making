@@ -5,7 +5,9 @@ import com.google.common.base.Preconditions;
 import lombok.Getter;
 
 import javax.validation.ConstraintViolation;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -17,8 +19,6 @@ public class DecisionMatrixBuilder {
     @Getter
     private final RawDecisionMatrix rawDecisionMatrix = new RawDecisionMatrix();
 
-    private List<Factor> factors = new ArrayList<>();
-
     DecisionMatrixBuilder(List<Alternative> alternatives, List<Scene> scenes, List<Output> outputs) {
         rawDecisionMatrix.setAlternatives(alternatives);
         rawDecisionMatrix.setScenes(scenes);
@@ -26,42 +26,23 @@ public class DecisionMatrixBuilder {
     }
 
     public DecisionMatrixBuilder withFactor(Factor factor) {
-        factors.add(factor);
+        if (rawDecisionMatrix.getFactors() == null) {
+            rawDecisionMatrix.setFactors(new ArrayList<>());
+        }
+        rawDecisionMatrix.getFactors().add(factor);
         return this;
     }
 
     public DecisionMatrixBuilder withFactors(List<Factor> factors) {
-        this.factors.addAll(factors);
+        if (rawDecisionMatrix.getFactors() == null) {
+            rawDecisionMatrix.setFactors(new ArrayList<>(factors.size()));
+        }
+        rawDecisionMatrix.getFactors().addAll(factors);
         return this;
     }
 
     public DecisionMatrix build() {
-        if ((factors == null || factors.isEmpty()) && rawDecisionMatrix.getScenes() != null && !rawDecisionMatrix.getScenes().isEmpty()) {
-            Factor factor = new Factor(Context.INSTANCE.getResources().getString("decision.matrix.table.factor"),
-                    Arrays.asList("A"),
-                    "A",
-                    Collections.nCopies(rawDecisionMatrix.getScenes().size(), 1.0));
-
-            factors.add(factor);
-        }
-        rawDecisionMatrix.setFactors(factors);
-
-        long numberOfNullProbabilities = rawDecisionMatrix.getScenes().stream()
-                .filter(scene -> scene.getProbability() == null)
-                .count();
-
-        if (numberOfNullProbabilities > 0) {
-            double sumOfNotNullProbabilities = rawDecisionMatrix.getScenes().stream()
-                    .filter(scene -> scene.getProbability() != null)
-                    .mapToDouble(Scene::getProbability)
-                    .sum();
-
-            final double newProbability = (1.0 - sumOfNotNullProbabilities) / numberOfNullProbabilities;
-
-            rawDecisionMatrix.getScenes().stream()
-                    .filter(scene -> scene.getProbability() == null)
-                    .forEach(scene -> scene.setProbability(newProbability));
-        }
+        rawDecisionMatrix.applyDefault();
 
         Set<ConstraintViolation<RawDecisionMatrix>> constraintViolations = Context.INSTANCE.getValidator().validate(rawDecisionMatrix);
 

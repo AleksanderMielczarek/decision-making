@@ -1,11 +1,13 @@
 package com.gmail.alekmiel91.decisionmaking.toolkit.data;
 
+import com.gmail.alekmiel91.decisionmaking.toolkit.Context;
 import com.gmail.alekmiel91.decisionmaking.toolkit.data.validation.*;
 import lombok.Getter;
 import lombok.Setter;
 import org.hibernate.validator.constraints.NotEmpty;
 
 import javax.validation.Valid;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -20,7 +22,7 @@ import java.util.List;
 @UniqueScenes
 @UniqueFactorsName
 @TotalSceneProbability
-public class RawDecisionMatrix {
+public class RawDecisionMatrix implements Defaultable {
 
     @Valid
     @NotEmpty(message = "{error.raw.decision.matrix.alternatives.not.empty}")
@@ -38,4 +40,34 @@ public class RawDecisionMatrix {
     @NotEmpty(message = "{error.raw.decision.matrix.factors.not.empty}")
     private List<Factor> factors;
 
+    @Override
+    public void applyDefault() {
+        alternatives.forEach(Defaultable::applyDefault);
+
+        if ((factors == null || factors.isEmpty()) && scenes != null && !scenes.isEmpty()) {
+            Factor factor = new Factor(Context.INSTANCE.getResources().getString("decision.matrix.table.factor"),
+                    Collections.singletonList("A"),
+                    "A",
+                    Collections.nCopies(scenes.size(), 1.0));
+
+            factors = Collections.singletonList(factor);
+        }
+
+        long numberOfNullProbabilities = scenes.stream()
+                .filter(scene -> scene.getProbability() == null)
+                .count();
+
+        if (numberOfNullProbabilities > 0) {
+            double sumOfNotNullProbabilities = scenes.stream()
+                    .filter(scene -> scene.getProbability() != null)
+                    .mapToDouble(Scene::getProbability)
+                    .sum();
+
+            final double newProbability = (1.0 - sumOfNotNullProbabilities) / numberOfNullProbabilities;
+
+            scenes.stream()
+                    .filter(scene -> scene.getProbability() == null)
+                    .forEach(scene -> scene.setProbability(newProbability));
+        }
+    }
 }
