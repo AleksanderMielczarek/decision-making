@@ -39,8 +39,11 @@ public class Alternative implements Defaultable {
 
     @Override
     public List<String> applyDefaultAndLog() {
-        risk = 0.5;
-        String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.alternative.risk"), name, risk);
-        return Collections.singletonList(log);
+        if (risk == null) {
+            risk = 0.5;
+            String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.alternative.risk"), name, risk);
+            return Collections.singletonList(log);
+        }
+        return Collections.emptyList();
     }
 }
