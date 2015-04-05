@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 
 import java.util.Arrays;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -30,8 +31,13 @@ public enum DecisionCriteria implements DecisionMaker {
     private final String shortcut;
 
     @Override
-    public String makeDecision(DecisionMatrix decisionMatrix) {
-        return Context.INSTANCE.getResources().getString(key) + ": " + decisionMaker.makeDecision(decisionMatrix);
+    public Set<String> makeDecision(DecisionMatrix decisionMatrix) {
+        return decisionMaker.makeDecision(decisionMatrix);
+    }
+
+    public String makePrintableDecision(DecisionMatrix decisionMatrix) {
+        return Context.INSTANCE.getResources().getString(key) + ": " + makeDecision(decisionMatrix).stream()
+                .collect(Collectors.joining(", "));
     }
 
     private static final Map<String, DecisionCriteria> SHORTCUT_DECISION_CRITERIA_MAP;

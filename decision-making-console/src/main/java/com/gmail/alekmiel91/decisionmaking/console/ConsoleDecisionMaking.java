@@ -22,7 +22,7 @@ public class ConsoleDecisionMaking {
 
         arguments.getDecisionCriteria().stream()
                 .map(DecisionCriteria::valueOfShortcut)
-                .map(decision -> decision.makeDecision(decisionMatrix))
+                .map(decision -> decision.makePrintableDecision(decisionMatrix))
                 .forEach(System.out::println);
     }
 }

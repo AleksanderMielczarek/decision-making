@@ -10,6 +10,7 @@ import org.jooq.lambda.Seq;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -18,7 +19,7 @@ import java.util.stream.Collectors;
  */
 public class BayesianDecisionMaker implements DecisionMaker {
     @Override
-    public String makeDecision(DecisionMatrix decisionMatrix) {
+    public Set<String> makeDecision(DecisionMatrix decisionMatrix) {
         List<String> chosenFactors = decisionMatrix.getRawDecisionMatrix().getFactors().stream()
                 .map(Factor::getChosenFactor)
                 .collect(Collectors.toList());
@@ -53,12 +54,12 @@ public class BayesianDecisionMaker implements DecisionMaker {
         Multimap<String, Double> factorAlternativesValues = ArrayListMultimap.create();
         probabilitiesFactorsOutputsValuesDividedBySum.forEach(probabilitiesFactorsOutputValuesDividedBySum ->
                 decisionMatrix.getDecisionTable().rowKeySet().stream().forEach(alternative -> {
-            double bayesian = Seq.zip(decisionMatrix.getDecisionTable().row(alternative).values().stream(), probabilitiesFactorsOutputValuesDividedBySum.stream())
-                    .mapToDouble(tuple -> tuple.v1().getValue() * tuple.v2())
-                    .sum();
+                    double bayesian = Seq.zip(decisionMatrix.getDecisionTable().row(alternative).values().stream(), probabilitiesFactorsOutputValuesDividedBySum.stream())
+                            .mapToDouble(tuple -> tuple.v1().getValue() * tuple.v2())
+                            .sum();
 
-            factorAlternativesValues.put(alternative.getName(), bayesian);
-        }));
+                    factorAlternativesValues.put(alternative.getName(), bayesian);
+                }));
 
         double max = factorAlternativesValues.values().stream()
                 .mapToDouble(Double::valueOf)
@@ -66,6 +67,7 @@ public class BayesianDecisionMaker implements DecisionMaker {
 
         return factorAlternativesValues.entries().stream()
                 .filter(entry -> entry.getValue() == max)
-                .findFirst().get().getKey();
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

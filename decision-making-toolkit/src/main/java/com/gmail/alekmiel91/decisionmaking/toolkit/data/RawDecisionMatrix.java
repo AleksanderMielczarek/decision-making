@@ -85,7 +85,7 @@ public class RawDecisionMatrix implements Defaultable {
                         .forEach(logs::add);
             }
         }
-        
+
         return logs;
     }
 }

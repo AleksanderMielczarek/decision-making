@@ -5,6 +5,8 @@ import org.jooq.lambda.Seq;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 /**
  * @author Aleksander Mielczarek
@@ -12,7 +14,7 @@ import java.util.Map;
  */
 public class MaximumExpectedValueDecisionMaker implements DecisionMaker {
     @Override
-    public String makeDecision(DecisionMatrix decisionMatrix) {
+    public Set<String> makeDecision(DecisionMatrix decisionMatrix) {
         final Map<String, Double> alternativesValues = new HashMap<>(decisionMatrix.getDecisionTable().rowKeySet().size());
 
         decisionMatrix.getDecisionTable().rowKeySet().stream().forEach(alternative -> {
@@ -23,6 +25,13 @@ public class MaximumExpectedValueDecisionMaker implements DecisionMaker {
             alternativesValues.put(alternative.getName(), weightedProbability);
         });
 
-        return alternativesValues.entrySet().stream().max((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey();
+        double max = alternativesValues.values().stream()
+                .mapToDouble(Double::valueOf)
+                .max().getAsDouble();
+
+        return alternativesValues.entrySet().stream()
+                .filter(entry -> entry.getValue() == max)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }

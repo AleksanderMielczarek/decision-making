@@ -8,6 +8,7 @@ import org.jooq.lambda.Seq;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 /**
@@ -16,7 +17,7 @@ import java.util.stream.Collectors;
  */
 public class SavageDecisionMaker implements DecisionMaker {
     @Override
-    public String makeDecision(DecisionMatrix decisionMatrix) {
+    public Set<String> makeDecision(DecisionMatrix decisionMatrix) {
 
         List<Double> rowMaxes = decisionMatrix.getDecisionTable().rowKeySet().stream()
                 .map(alternative -> decisionMatrix.getDecisionTable().row(alternative).values().stream()
@@ -51,6 +52,13 @@ public class SavageDecisionMaker implements DecisionMaker {
             alternativesValues.put(alternative.getName(), max);
         });
 
-        return alternativesValues.entrySet().stream().min((entry1, entry2) -> entry1.getValue() > entry2.getValue() ? 1 : -1).get().getKey();
+        double min = alternativesValues.values().stream()
+                .mapToDouble(Double::valueOf)
+                .min().getAsDouble();
+
+        return alternativesValues.entrySet().stream()
+                .filter(entry -> entry.getValue() == min)
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toSet());
     }
 }
