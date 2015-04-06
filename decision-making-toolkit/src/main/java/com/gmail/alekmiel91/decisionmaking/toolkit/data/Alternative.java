@@ -21,6 +21,8 @@ import java.util.List;
 @NoArgsConstructor
 public class Alternative implements Defaultable {
 
+    public static final double DEFAULT_RISK = 0.5;
+
     @NotEmpty(message = "{error.alternative.name.not.empty}")
     private String name;
 
@@ -40,8 +42,8 @@ public class Alternative implements Defaultable {
     @Override
     public List<String> applyDefaultAndLog() {
         if (risk == null) {
-            risk = 0.5;
-            String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.alternative.risk"), name, risk);
+            risk = DEFAULT_RISK;
+            String log = MessageFormat.format(Context.INSTANCE.getResources().getString("log.default.alternative.risk"), name, DEFAULT_RISK);
             return Collections.singletonList(log);
         }
         return Collections.emptyList();
